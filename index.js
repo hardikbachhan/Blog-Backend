@@ -8,17 +8,17 @@ const mongoose = require("mongoose");
 dotenv.config();
 
 mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  .then(console.log("Connected to MongoDB"))
-  .catch((err) => console.log(err));
+    .connect(process.env.MONGO_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    .then(console.log("Connected to MongoDB"))
+    .catch((err) => console.log(err));
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+    res.send("Hello World!");
 });
 
 app.listen(port, () => {
-  console.log(`Blog app listening on port ${port}`);
+    console.log(`Blog app listening on port ${port}`);
 });
