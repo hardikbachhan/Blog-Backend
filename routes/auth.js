@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt');
 
 authRouter.post("/register", async (req, res) => {
     try {
-
+        // generating password hash.
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
@@ -28,5 +28,35 @@ authRouter.post("/register", async (req, res) => {
 });
 
 //LOGIN
+
+authRouter.post("/login", async (req, res) => {
+    try {
+        // find if user with given credentials exist
+        const user = await User.findOne({ username: req.body.username })
+
+        // redirect to register page if no user found
+        if (!user) {
+            res.status(400).json({ error: "Wrong Credentials!" });
+            // res.redirect("/api/auth/register");
+            return;
+        }
+
+        // validate user data sent with saved data - password
+        const validated = await bcrypt.compare(req.body.password, user.password);
+
+        // wrong credentials sent
+        if (!validated) {
+            res.status(400).json({ error: "Wrong Credentials!" });
+            return;
+        }
+
+        const { password, ...otherDetails } = user._doc;
+
+        res.status(200).json({user: otherDetails, validation: validated})
+
+    } catch (error) {
+        res.status(500).json(error);
+    }
+});
 
 module.exports = authRouter;
